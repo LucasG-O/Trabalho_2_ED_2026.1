@@ -17,8 +17,8 @@ struct TransacoesNode{
     TransacoesNode* next;
 };
 
-int n_sell;
-int n_buy;
+int* n_sell;
+int* n_buy;
 
 OrderNode* orders[2]; // 0 para ordens de compra, 1 para ordens de venda
 TransacoesNode* transactions_head;
@@ -26,7 +26,7 @@ TransacoesNode* transactions_head;
 
 public:
 
-    OrderBook(int n_sell, int n_buy);
+    OrderBook();
     ~OrderBook();
 
     bool submit(Order order);

@@ -1,7 +1,9 @@
 #include "OrderBook.hpp"
 
 
-OrderBook::OrderBook(int n_sell, int n_buy) : n_sell(n_sell), n_buy(n_buy) {
+OrderBook::OrderBook(){
+    *n_sell = 0;
+    *n_buy = 0;
     orders[0] = nullptr; // Inicializa a lista de ordens de compra
     orders[1] = nullptr; // Inicializa a lista de ordens de venda
     transactions_head = nullptr; // Inicializa a lista de transações
@@ -50,5 +52,36 @@ Order* OrderBook::getBuyOrders(int* n) {
     // Implementação da lógica para obter as ordens de compra
     // Retornar um array de ordens de compra e atualizar o valor de n com o número de ordens
 }
+
+Order* OrderBook::getSellOrders(int* n) {
+    // Implementação da lógica para obter as ordens de venda
+    // Retornar um array de ordens de venda e atualizar o valor de n com o número de ordens
+}
+
+Transaction* OrderBook::getTransactions(int* n) {
+    // Implementação da lógica para obter as transações realizadas
+    // Retornar um array de transações e atualizar o valor de n com o número de transações
+}
+
+int OrderBook::getNumBuyOrders() {
+    return *(this->n_buy);
+}
+
+int OrderBook::getNumSellOrders() {
+    return *(this->n_sell); 
+}
+
+void OrderBook::printBuyOrders() {
+    // Implementação da lógica para imprimir as ordens de compra
+}
+
+void OrderBook::printSellOrders() {
+    // Implementação da lógica para imprimir as ordens de venda
+}
+
+void OrderBook::printTransactions() {
+    // Implementação da lógica para imprimir as transações realizadas
+}
+
 
 
