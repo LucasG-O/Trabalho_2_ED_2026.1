@@ -1,4 +1,5 @@
 #include "OrderBook.hpp"
+#include <iostream>
 
 
 OrderBook::OrderBook(){
@@ -35,11 +36,118 @@ OrderBook::~OrderBook() {  // Vou ter que pensar melhor nessa lógica depois, de
     }
 }
 
-bool OrderBook::submit(Order order) {
-    // Implementação da lógica para submissão de ordens
-    // Verificar se é uma ordem de compra ou venda e inserir na lista correspondente
-    // Verificar se há correspondência para realizar transações
-    // Retornar true se a ordem foi processada com sucesso, false caso contrário
+bool OrderBook::submit(Order order) {   // Falta colocar os retornos booleanos nessa função
+    char tipo_ordem = order.getType(); 
+    OrderNode* maior_ordem_compra;
+    OrderNode* menor_ordem_venda;
+
+    // CASO QUE A ORDEM RECEBIDA É DE VENDA
+    if (tipo_ordem == 'S'){
+        if (orders[0] == nullptr){ // Nenhuma ordem de compra no banco de dados
+            this->armazenarOrdem(order, &orders[1]);
+        }
+        else{
+            maior_ordem_compra = orders[0];
+            if (order.getPrice() > maior_ordem_compra->order.getPrice()) { // A ordem com maior preco de compra é menor do que o preco de venda da ordem em questão
+                this->armazenarOrdem(order, &orders[1]);   
+            }
+            else{
+                this->executarTransacao(order, maior_ordem_compra->order); // A ordem com maior preco de compra é tao grande quando o preco de venda. 
+            }
+        }
+    }
+
+    // CASO QUE A ORDEM RECEBIDA É DE COMPRA
+    else if (tipo_ordem == 'B'){
+        if (orders[1] == nullptr) { // Nenhuma ordem de venda no banco de dados
+            this->armazenarOrdem(order, &orders[0]);
+        }
+        else{
+            menor_ordem_venda = orders[1]; 
+            if (order.getPrice() < menor_ordem_venda->order.getPrice()){ // Lógica parecida com a de cima
+                this->armazenarOrdem(order, &orders[0]);
+            }
+            else{
+                this->executarTransacao(order, menor_ordem_venda->order);
+            }
+        }
+    }
+}
+
+void OrderBook::armazenarOrdem(Order order, OrderNode* *lista_head) {
+    char order_type = order.getType(); 
+    OrderNode* nova_ordem; 
+    nova_ordem->order = order;
+    nova_ordem->proximo = nullptr;
+
+    if (*lista_head == nullptr){ // Lista vazia, é só adicinar order em primeiro lugar
+        *lista_head = nova_ordem;   
+    }
+    else {
+        OrderNode* atual = *lista_head;
+        OrderNode* anterior = nullptr;
+
+        if (order_type == 'B'){
+
+            while (atual != nullptr){
+                if (atual->order.getPrice() < order.getPrice()){ // Se a ordem em questão é ordem de compra então vamos organizar a lista em ordem decrescente
+                    nova_ordem->proximo = atual;
+                    *lista_head = nova_ordem;
+                    break;
+                }
+                else if (atual->order.getPrice() == order.getPrice()){
+                    if (atual->order.getTimestamp() >= nova_ordem->order.getTimestamp()){
+                        if (anterior == nullptr){
+                            nova_ordem->proximo = atual;
+                            *lista_head = nova_ordem;
+                            break;
+                        }
+                        else{
+                            anterior->proximo = nova_ordem;
+                            nova_ordem->proximo = atual;
+                            break;
+                        }
+                    }
+                    anterior = atual;
+                    atual = atual->proximo;
+                }
+            }
+        }
+        
+        else if (order_type == 'S'){
+
+            while (atual != nullptr){
+                if (atual->order.getPrice() < order.getPrice()){ // Se a ordem em questão é ordem de compra então vamos organizar a lista em ordem crescente
+                    nova_ordem->proximo = atual;
+                    *lista_head = nova_ordem;
+                    break;
+                }
+                else if (atual->order.getPrice() == order.getPrice()){
+                    if (atual->order.getTimestamp() >= nova_ordem->order.getTimestamp()){
+                        if (anterior == nullptr){
+                            nova_ordem->proximo = atual;
+                            *lista_head = nova_ordem;
+                            break;
+                        }
+                        else{
+                            anterior->proximo = nova_ordem;
+                            nova_ordem->proximo = atual;
+                            break;
+                        }
+                    }
+
+                anterior = atual;
+                atual = atual->proximo;
+                }
+            }
+        }
+
+    }
+}
+  
+
+void OrderBook::executarTransacao(Order order_sell, Order order_buy){
+    // Implementação da lógica para executar uma ordem
 }
 
 bool OrderBook::cancel(int id) {
@@ -82,6 +190,4 @@ void OrderBook::printSellOrders() {
 void OrderBook::printTransactions() {
     // Implementação da lógica para imprimir as transações realizadas
 }
-
-
 
