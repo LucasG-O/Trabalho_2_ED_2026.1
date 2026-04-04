@@ -237,6 +237,11 @@ void OrderBook::printSellOrders() {
 }
 
 void OrderBook::printTransactions() {
+    TransacoesNode* atual = transactions_head;
+    while(atual != nullptr){
+        std::cout <<"[ "<< atual->transaction.getBuyOrderId()  << " | " << atual->transaction.getSellOrderId() << " | " << atual->transaction.getExecutionPrice() << " ] " << std::endl;//[ Id da ordem de compra | Id da ordem de venda | Preço de execução ]
+        atual = atual->proximo;
+    }
     // Implementação da lógica para imprimir as transações realizadas
 }
 

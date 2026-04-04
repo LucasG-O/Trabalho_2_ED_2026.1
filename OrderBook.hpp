@@ -13,7 +13,7 @@ private:
 
     struct TransacoesNode{
         Transaction transaction;
-        TransacoesNode* next;
+        TransacoesNode* proximo;
     };
 
     int* n_sell;
