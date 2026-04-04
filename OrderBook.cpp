@@ -45,39 +45,31 @@ bool OrderBook::submit(Order order) {
     if (tipo_ordem == 'S'){
         if (orders[0] == nullptr){ // Nenhuma ordem de compra no banco de dados
             this->armazenarOrdem(order, &orders[1]);
-            return false
+            return false;
         }
-        else{
-            maior_ordem_compra = orders[0];
-            if (order.getPrice() > maior_ordem_compra->order.getPrice()) { // A ordem com maior preco de compra é menor do que o preco de venda da ordem em questão
-                this->armazenarOrdem(order, &orders[1]);   
-                return false
-            }
-            else{
-                this->executarTransacao(order, maior_ordem_compra->order); // A ordem com maior preco de compra é tao grande quando o preco de venda. 
-                return true
-            }
+        maior_ordem_compra = orders[0];
+        if (order.getPrice() > maior_ordem_compra->order.getPrice()) { // A ordem com maior preco de compra é menor do que o preco de venda da ordem em questão
+            this->armazenarOrdem(order, &orders[1]);   
+            return false;
         }
+
+        this->executarTransacao(order, maior_ordem_compra->order, 'S'); // A ordem com maior preco de compra é tao grande quando o preco de venda. 
+        return true;
     }
 
     // CASO QUE A ORDEM RECEBIDA É DE COMPRA
-    else if (tipo_ordem == 'B'){
-        if (orders[1] == nullptr) { // Nenhuma ordem de venda no banco de dados
-            this->armazenarOrdem(order, &orders[0]);
-            return false
-        }
-        else{
-            menor_ordem_venda = orders[1]; 
-            if (order.getPrice() < menor_ordem_venda->order.getPrice()){ // Lógica parecida com a de cima
-                this->armazenarOrdem(order, &orders[0]);
-                return false
-            }
-            else{
-                this->executarTransacao(order, menor_ordem_venda->order);
-                return true
-            }
-        }
+
+    if (orders[1] == nullptr) { // Nenhuma ordem de venda no banco de dados
+        this->armazenarOrdem(order, &orders[0]);
+        return false;
     }
+    menor_ordem_venda = orders[1]; 
+    if (order.getPrice() < menor_ordem_venda->order.getPrice()){ // Lógica parecida com a de cima
+        this->armazenarOrdem(order, &orders[0]);
+        return false;
+    }
+    this->executarTransacao(menor_ordem_venda->order,order, 'B');
+    return true;
 }
 
 void OrderBook::armazenarOrdem(Order order, OrderNode* *lista_head) {
@@ -152,8 +144,31 @@ void OrderBook::armazenarOrdem(Order order, OrderNode* *lista_head) {
 }
   
 
-void OrderBook::executarTransacao(Order order_sell, Order order_buy){
-    // Implementação da lógica para executar uma ordem
+void OrderBook::executarTransacao(Order order_sell, Order order_buy, char tipo_ordem) {
+
+    if(tipo_ordem == 'S'){
+        Transaction nova_transacao(order_buy.getId(), order_sell.getId(), order_buy.getPrice());
+        OrderNode* atual = orders[0]; // A primeira ordem de compra
+        OrderNode* anterior = nullptr;
+        while(order_buy.getId() != atual->order.getId()){
+            anterior = atual;
+            atual = atual->proximo;
+
+        }
+        anterior->proximo = atual->proximo; // Lógica para remover a ordem de compra da lista de ordens de compra
+        // Lógica para atualizar ou remover as ordens de compra e venda envolvidas na transação
+    }
+    else if (tipo_ordem == 'B'){
+        Transaction nova_transacao(order_buy.getId(), order_sell.getId(), order_sell.getPrice());
+        OrderNode* atual = orders[1]; // A primeira ordem de venda
+        OrderNode* anterior = nullptr;
+        while(order_sell.getId() != atual->order.getId()){
+            anterior = atual;
+            atual = atual->proximo;
+
+        }
+        anterior->proximo = atual->proximo;
+    }
 }
 
 bool OrderBook::cancel(int id) {

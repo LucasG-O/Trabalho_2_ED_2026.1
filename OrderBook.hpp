@@ -24,7 +24,7 @@ private:
     TransacoesNode* transactions_head;
 
     void armazenarOrdem(Order order, OrderNode* *head_lista);
-    void executarTransacao(Order order_sell, Order order_buy);
+    void executarTransacao(Order order_sell, Order order_buy, char tipo_ordem);
 
 
 public:
