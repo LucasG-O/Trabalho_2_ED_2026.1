@@ -138,7 +138,6 @@ void OrderBook::armazenarOrdem(Order order, OrderNode* *lista_head) {
                         else{
                             anterior->proximo = nova_ordem;
                             nova_ordem->proximo = atual;
-                            break;
                         }
                     }
 
