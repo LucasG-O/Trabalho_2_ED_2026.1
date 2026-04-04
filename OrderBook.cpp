@@ -36,7 +36,7 @@ OrderBook::~OrderBook() {  // Vou ter que pensar melhor nessa lógica depois, de
     }
 }
 
-bool OrderBook::submit(Order order) {   // Falta colocar os retornos booleanos nessa função
+bool OrderBook::submit(Order order) {   
     char tipo_ordem = order.getType(); 
     OrderNode* maior_ordem_compra;
     OrderNode* menor_ordem_venda;
@@ -45,15 +45,17 @@ bool OrderBook::submit(Order order) {   // Falta colocar os retornos booleanos n
     if (tipo_ordem == 'S'){
         if (orders[0] == nullptr){ // Nenhuma ordem de compra no banco de dados
             this->armazenarOrdem(order, &orders[1]);
+            return false
         }
         else{
             maior_ordem_compra = orders[0];
             if (order.getPrice() > maior_ordem_compra->order.getPrice()) { // A ordem com maior preco de compra é menor do que o preco de venda da ordem em questão
                 this->armazenarOrdem(order, &orders[1]);   
+                return false
             }
             else{
                 this->executarTransacao(order, maior_ordem_compra->order); // A ordem com maior preco de compra é tao grande quando o preco de venda. 
-                
+                return true
             }
         }
     }
@@ -62,14 +64,17 @@ bool OrderBook::submit(Order order) {   // Falta colocar os retornos booleanos n
     else if (tipo_ordem == 'B'){
         if (orders[1] == nullptr) { // Nenhuma ordem de venda no banco de dados
             this->armazenarOrdem(order, &orders[0]);
+            return false
         }
         else{
             menor_ordem_venda = orders[1]; 
             if (order.getPrice() < menor_ordem_venda->order.getPrice()){ // Lógica parecida com a de cima
                 this->armazenarOrdem(order, &orders[0]);
+                return false
             }
             else{
                 this->executarTransacao(order, menor_ordem_venda->order);
+                return true
             }
         }
     }
