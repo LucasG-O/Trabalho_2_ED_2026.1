@@ -66,47 +66,68 @@ bool OrderBook::submit(Order order) {
 
 void OrderBook::armazenarOrdem(Order order, OrderNode* *lista_head) {
     char order_type = order.getType(); 
-    OrderNode* nova_ordem; 
-    nova_ordem->order = order;
-    nova_ordem->proximo = nullptr;
+    OrderNode* nova_ordem = new OrderNode{order, nullptr}; // Alocar memória para a nova ordem
 
     if (*lista_head == nullptr){ // Lista vazia, é só adicinar order em primeiro lugar
-        *lista_head = nova_ordem;   
+        *lista_head = nova_ordem;
+        return;  
     }
-    else {
         OrderNode* atual = *lista_head;
         OrderNode* anterior = nullptr;
 
         if (order_type == 'B'){
+            if(atual->order.getPrice() < order.getPrice() ||
+             (atual->order.getPrice() == order.getPrice() &&
+              atual->order.getTimestamp() >= nova_ordem->order.getTimestamp())
+            ){ // Se a ordem em questão é ordem de compra então vamos organizar a lista em ordem decrescente
+                nova_ordem->proximo = atual;
+                *lista_head = nova_ordem;
+                return;
 
+            }
             while (atual != nullptr){
                 if ((atual->order.getPrice() < order.getPrice())||
                     ((atual->order.getPrice() == order.getPrice())&&
                     (atual->order.getTimestamp() >= nova_ordem->order.getTimestamp()))){ // Se a ordem em questão é ordem de compra então vamos organizar a lista em ordem decrescente
+                    
+                    anterior->proximo = nova_ordem;
                     nova_ordem->proximo = atual;
-                    *lista_head = nova_ordem;
                     break;
                 }
                     anterior = atual;
                     atual = atual->proximo;
+            }
+            if (atual == nullptr){ // A nova ordem é a menor da lista, então ela deve ser adicionada no final da lista
+                anterior->proximo = nova_ordem;
+                nova_ordem->proximo = nullptr;
             }
         }
         else{
-
+            if(atual->order.getPrice() > order.getPrice() || (atual->order.getPrice() == order.getPrice() && atual->order.getTimestamp() <= nova_ordem->order.getTimestamp())){ // Se a ordem em questão é ordem de compra então vamos organizar a lista em ordem decrescente
+                nova_ordem->proximo = atual;
+                *lista_head = nova_ordem;
+                return;
+            }
             while (atual != nullptr){
                 if ((atual->order.getPrice() > order.getPrice())||
                     ((atual->order.getPrice() == order.getPrice())&&
-                    (atual->order.getTimestamp() <= nova_ordem->order.getTimestamp()))){ // Se a ordem em questão é ordem de compra então vamos organizar a lista em ordem decrescente
-                    nova_ordem->proximo = atual;
-                    *lista_head = nova_ordem;
+                    (atual->order.getTimestamp() >= nova_ordem->order.getTimestamp()))){ // Se a ordem em questão é ordem de compra então vamos organizar a lista em ordem decrescente
+                    
+                    anterior->proximo = nova_ordem;
+                    nova_ordem->proximo = atual;    
+
                     break;
                 }
-                    anterior = atual;
-                    atual = atual->proximo;
+                anterior = atual;
+                atual = atual->proximo;
             }
-        }
+            if (atual == nullptr){ // A nova ordem é a maior da lista, então ela deve ser adicionada no final da lista
+                anterior->proximo = nova_ordem;
+                nova_ordem->proximo = nullptr;
+            }   
     }
 }
+
   
 
 void OrderBook::executarTransacao(Order order_sell, Order order_buy, char tipo_ordem) {
@@ -154,7 +175,6 @@ bool OrderBook::cancel(int id) {
         }
         anterior_c = atual_c;
         atual_c = atual_c->proximo;
-    
     }
     while(atual_v != nullptr){
         if (atual_v->order.getId() == id){
