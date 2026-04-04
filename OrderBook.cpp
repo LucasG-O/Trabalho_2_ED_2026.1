@@ -52,7 +52,7 @@ bool OrderBook::submit(Order order) {
         this->executarTransacao(order, maior_ordem_compra->order, 'S'); // A ordem com maior preco de compra é tao grande quando o preco de venda. 
         return true;
     }
-    
+
     // CASO QUE A ORDEM RECEBIDA É DE COMPRA
     menor_ordem_venda = orders[1];
     if (orders[1] == nullptr|| order.getPrice() < menor_ordem_venda->order.getPrice()) { // Nenhuma ordem de venda no banco de dados
@@ -80,58 +80,31 @@ void OrderBook::armazenarOrdem(Order order, OrderNode* *lista_head) {
         if (order_type == 'B'){
 
             while (atual != nullptr){
-                if (atual->order.getPrice() < order.getPrice()){ // Se a ordem em questão é ordem de compra então vamos organizar a lista em ordem decrescente
+                if ((atual->order.getPrice() < order.getPrice())||
+                    ((atual->order.getPrice() == order.getPrice())&&
+                    (atual->order.getTimestamp() >= nova_ordem->order.getTimestamp()))){ // Se a ordem em questão é ordem de compra então vamos organizar a lista em ordem decrescente
                     nova_ordem->proximo = atual;
                     *lista_head = nova_ordem;
                     break;
                 }
-                else if (atual->order.getPrice() == order.getPrice()){
-                    if (atual->order.getTimestamp() >= nova_ordem->order.getTimestamp()){
-                        if (anterior == nullptr){
-                            nova_ordem->proximo = atual;
-                            *lista_head = nova_ordem;
-                            break;
-                        }
-                        else{
-                            anterior->proximo = nova_ordem;
-                            nova_ordem->proximo = atual;
-                            break;
-                        }
-                    }
                     anterior = atual;
                     atual = atual->proximo;
-                }
             }
         }
-
-        else if (order_type == 'S'){
+        else{
 
             while (atual != nullptr){
-                if (atual->order.getPrice() < order.getPrice()){ // Se a ordem em questão é ordem de compra então vamos organizar a lista em ordem crescente
+                if (atual->order.getPrice() > order.getPrice()||
+                    atual->order.getPrice() == order.getPrice()&&
+                    atual->order.getTimestamp() <= nova_ordem->order.getTimestamp()){ // Se a ordem em questão é ordem de compra então vamos organizar a lista em ordem decrescente
                     nova_ordem->proximo = atual;
                     *lista_head = nova_ordem;
                     break;
                 }
-                else if (atual->order.getPrice() == order.getPrice()){
-                    if (atual->order.getTimestamp() >= nova_ordem->order.getTimestamp()){
-                        if (anterior == nullptr){
-                            nova_ordem->proximo = atual;
-                            *lista_head = nova_ordem;
-                            break;
-                        }
-                        else{
-                            anterior->proximo = nova_ordem;
-                            nova_ordem->proximo = atual;
-                            break;
-                        }
-                    }
-
-                anterior = atual;
-                atual = atual->proximo;
-                }
+                    anterior = atual;
+                    atual = atual->proximo;
             }
         }
-
     }
 }
   
@@ -150,7 +123,7 @@ void OrderBook::executarTransacao(Order order_sell, Order order_buy, char tipo_o
         anterior->proximo = atual->proximo; // Lógica para remover a ordem de compra da lista de ordens de compra
         // Lógica para atualizar ou remover as ordens de compra e venda envolvidas na transação
     }
-    else if (tipo_ordem == 'B'){
+    else {
         Transaction nova_transacao(order_buy.getId(), order_sell.getId(), order_sell.getPrice());
         OrderNode* atual = orders[1]; // A primeira ordem de venda
         OrderNode* anterior = nullptr;
@@ -164,6 +137,42 @@ void OrderBook::executarTransacao(Order order_sell, Order order_buy, char tipo_o
 }
 
 bool OrderBook::cancel(int id) {
+
+    OrderNode* atual_c = orders[0]; // A primeira ordem de compra
+    OrderNode* anterior_c    = nullptr;
+    OrderNode* atual_v = orders[1]; // A primeira ordem de venda
+    OrderNode* anterior_v = nullptr;
+    while (atual_c != nullptr){
+        if (atual_c->order.getId() == id){
+            if (anterior_c == nullptr){ // A ordem a ser cancelada é a primeira da lista de ordens de compra
+                orders[0] = atual_c->proximo;
+            }
+            else{
+                anterior_c->proximo = atual_c->proximo;
+            }
+            delete atual_c; // Libera a memória alocada para a ordem cancelada
+            return true; // Ordem cancelada com sucesso
+        }
+        anterior_c = atual_c;
+        atual_c = atual_c->proximo;
+    
+    }
+    while(atual_v != nullptr){
+        if (atual_v->order.getId() == id){
+            if (anterior_v == nullptr){ // A ordem a ser cancelada é a primeira da lista de ordens de venda
+                orders[1] = atual_v->proximo;
+            }
+            else{
+                anterior_v->proximo = atual_v->proximo;
+            }
+            delete atual_v; // Libera a memória alocada para a ordem cancelada
+            return true; // Ordem cancelada com sucesso
+        }
+        anterior_v = atual_v;
+        atual_v = atual_v->proximo;
+    }
+    std::cout << "Ordem com ID " << id << " não encontrada. Cancelamento falhou." << std::endl;
+    return false; // Ordem não encontrada, cancelamento falhou
     // Implementação da lógica para cancelamento de ordens
     // Verificar se a ordem existe e removê-la da lista correspondente
     // Retornar true se a ordem foi cancelada com sucesso, false caso contrário
@@ -193,10 +202,18 @@ int OrderBook::getNumSellOrders() {
 }
 
 void OrderBook::printBuyOrders() {
+    while(orders[0] != nullptr){
+        std::cout <<"[ "<< orders[0]->order.getId()  << " | " << orders[0]->order.getPrice() << " | " << orders[0]->order.getTimestamp() << " ] " << std::endl;//[ Id | Preço | Timestamp ]
+        orders[0] = orders[0]->proximo;
+    }
     // Implementação da lógica para imprimir as ordens de compra
 }
 
 void OrderBook::printSellOrders() {
+    while(orders[1] != nullptr){
+        std::cout <<"[ "<< orders[1]->order.getId()  << " | " << orders[1]->order.getPrice() << " | " << orders[1]->order.getTimestamp() << " ] " << std::endl;//[ Id | Preço | Timestamp ]
+        orders[1] = orders[1]->proximo;
+    }
     // Implementação da lógica para imprimir as ordens de venda
 }
 
