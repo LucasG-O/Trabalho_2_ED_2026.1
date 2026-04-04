@@ -53,6 +53,7 @@ bool OrderBook::submit(Order order) {   // Falta colocar os retornos booleanos n
             }
             else{
                 this->executarTransacao(order, maior_ordem_compra->order); // A ordem com maior preco de compra é tao grande quando o preco de venda. 
+                
             }
         }
     }
@@ -113,7 +114,7 @@ void OrderBook::armazenarOrdem(Order order, OrderNode* *lista_head) {
                 }
             }
         }
-        
+
         else if (order_type == 'S'){
 
             while (atual != nullptr){
