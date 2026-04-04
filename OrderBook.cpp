@@ -31,7 +31,7 @@ OrderBook::~OrderBook() {  // Vou ter que pensar melhor nessa lógica depois, de
     TransacoesNode* current_transaction = transactions_head;
     while (current_transaction != nullptr) {
         TransacoesNode* temp = current_transaction;
-        current_transaction = current_transaction->next;
+        current_transaction = current_transaction->proximo;
         delete temp;
     }
 }
