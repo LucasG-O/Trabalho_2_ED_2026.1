@@ -94,9 +94,9 @@ void OrderBook::armazenarOrdem(Order order, OrderNode* *lista_head) {
         else{
 
             while (atual != nullptr){
-                if (atual->order.getPrice() > order.getPrice()||
-                    atual->order.getPrice() == order.getPrice()&&
-                    atual->order.getTimestamp() <= nova_ordem->order.getTimestamp()){ // Se a ordem em questão é ordem de compra então vamos organizar a lista em ordem decrescente
+                if ((atual->order.getPrice() > order.getPrice())||
+                    ((atual->order.getPrice() == order.getPrice())&&
+                    (atual->order.getTimestamp() <= nova_ordem->order.getTimestamp()))){ // Se a ordem em questão é ordem de compra então vamos organizar a lista em ordem decrescente
                     nova_ordem->proximo = atual;
                     *lista_head = nova_ordem;
                     break;
@@ -130,7 +130,6 @@ void OrderBook::executarTransacao(Order order_sell, Order order_buy, char tipo_o
         while(order_sell.getId() != atual->order.getId()){
             anterior = atual;
             atual = atual->proximo;
-
         }
         anterior->proximo = atual->proximo;
     }
