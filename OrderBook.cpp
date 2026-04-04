@@ -43,31 +43,23 @@ bool OrderBook::submit(Order order) {
 
     // CASO QUE A ORDEM RECEBIDA É DE VENDA
     if (tipo_ordem == 'S'){
-        if (orders[0] == nullptr){ // Nenhuma ordem de compra no banco de dados
-            this->armazenarOrdem(order, &orders[1]);
-            return false;
-        }
         maior_ordem_compra = orders[0];
-        if (order.getPrice() > maior_ordem_compra->order.getPrice()) { // A ordem com maior preco de compra é menor do que o preco de venda da ordem em questão
-            this->armazenarOrdem(order, &orders[1]);   
+        if (orders[0] == nullptr|| order.getPrice() > maior_ordem_compra->order.getPrice()) { // Nenhuma ordem de compra no banco de dados
+            this->armazenarOrdem(order, &orders[1]);
             return false;
         }
 
         this->executarTransacao(order, maior_ordem_compra->order, 'S'); // A ordem com maior preco de compra é tao grande quando o preco de venda. 
         return true;
     }
-
+    
     // CASO QUE A ORDEM RECEBIDA É DE COMPRA
+    menor_ordem_venda = orders[1];
+    if (orders[1] == nullptr|| order.getPrice() < menor_ordem_venda->order.getPrice()) { // Nenhuma ordem de venda no banco de dados
+        this->armazenarOrdem(order, &orders[0]);
+        return false;
+    } 
 
-    if (orders[1] == nullptr) { // Nenhuma ordem de venda no banco de dados
-        this->armazenarOrdem(order, &orders[0]);
-        return false;
-    }
-    menor_ordem_venda = orders[1]; 
-    if (order.getPrice() < menor_ordem_venda->order.getPrice()){ // Lógica parecida com a de cima
-        this->armazenarOrdem(order, &orders[0]);
-        return false;
-    }
     this->executarTransacao(menor_ordem_venda->order,order, 'B');
     return true;
 }
