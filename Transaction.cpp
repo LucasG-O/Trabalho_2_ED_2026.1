@@ -6,6 +6,7 @@ Transaction::Transaction(int buy_order_id, int sell_order_id, float execution_pr
     this->execution_price = execution_price;
 }
 Transaction::~Transaction() = default;
+Transaction::Transaction() = default;
 
 int Transaction::getBuyOrderId() {
     return this->buy_order_id;

@@ -16,8 +16,8 @@ private:
         TransacoesNode* proximo;
     };
 
-    int* n_sell;
-    int* n_buy;
+    int n_sell;
+    int n_buy;
 
     OrderNode* orders[2]; // 0 para ordens de compra, organizada em ordem decrescente de preço
                           // 1 para ordens de venda, organizada em ordem crescente de preço
