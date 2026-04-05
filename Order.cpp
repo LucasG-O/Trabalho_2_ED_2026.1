@@ -6,6 +6,7 @@ Order::Order(int id, char type, float price, int timestamp) {
     this->price = price;
     this->timestamp = timestamp;
 }
+Order::Order() = default;
 Order::~Order() = default;
 
 int Order::getId() {
