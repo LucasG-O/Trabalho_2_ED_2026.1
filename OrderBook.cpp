@@ -1,5 +1,3 @@
-
-
 #include "OrderBook.hpp"
 #include <iostream>
 
@@ -163,40 +161,14 @@ void OrderBook::executarTransacao(Order order_sell, Order order_buy, char tipo_o
     // Remove da lista de COMPRA
     if(tipo_ordem == 'S'){
         OrderNode* atual = orders[0]; 
-        OrderNode* anterior = nullptr;
-        
-        while(atual != nullptr && order_buy.getId() != atual->order.getId()){
-            anterior = atual;
-            atual = atual->proximo;
-        }
-        
-        if (atual != nullptr) {
-            if (anterior == nullptr) { 
-                orders[0] = atual->proximo; 
-            } else {
-                anterior->proximo = atual->proximo; 
-            }
-            delete atual;
-        }
+        orders[0] = atual ->proximo;
+        delete atual;
     }
     // Remove da lista de VENDA
     else {
-        OrderNode* atual = orders[1]; 
-        OrderNode* anterior = nullptr;
-        
-        while(atual != nullptr && order_sell.getId() != atual->order.getId()){
-            anterior = atual;
-            atual = atual->proximo;
-        }
-        
-        if (atual != nullptr) {
-            if (anterior == nullptr) { 
-                orders[1] = atual->proximo; 
-            } else {
-                anterior->proximo = atual->proximo; 
-            }
-            delete atual; // Libera a memória
-        }
+        OrderNode* atual = orders[1];   
+        orders[1] = atual->proximo; 
+        delete atual;
     }
 }
 
