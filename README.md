@@ -8,7 +8,7 @@ O projeto demonstra o uso prático de Ponteiros, Alocação Dinâmica de Memóri
 ---
 
 ## Instruções de Compilação
-Para compilar o projeto, você precisará de um compilador C++ (como o GCC/g++ ou MinGW) instalado na sua máquina.
+Para compilar o projeto, você precisará de um compilador C++ instalado na sua máquina.
 
 Abra o terminal na pasta raiz do projeto e execute o seguinte comando para compilar todos os arquivos fonte em um único executável:
 
@@ -36,11 +36,11 @@ Para garantir eficiência nas inserções e remoções, o sistema foi construíd
 A classe OrderBook contém três listas encadeadas principais:
 
 1. **Lista de Ordens de Compra (orders[0]):**
-   - **Regra de Ordenação:** Decrescente. As ordens que oferecem o **maior preço** ficam no topo da fila, pois têm prioridade na compra.
+   - **Regra de Ordenação:** Decrescente. As ordens que oferecem o maior preço ficam no topo da fila, pois têm prioridade na compra.
    - **Desempate:** FIFO (First In, First Out). Se duas ordens têm o mesmo preço, a que chegou primeiro (menor timestamp) tem prioridade.
 
 2. **Lista de Ordens de Venda (orders[1]):**
-   - **Regra de Ordenação:** Crescente. As ordens que exigem o **menor preço** ficam no topo da fila, pois são as ofertas mais atrativas para o mercado.
+   - **Regra de Ordenação:** Crescente. As ordens que exigem o menor preço ficam no topo da fila, pois são as ofertas mais atrativas para o mercado.
    - **Desempate:** FIFO, utilizando o timestamp.
 
 3. **Lista de Transações (transactions_head):**
