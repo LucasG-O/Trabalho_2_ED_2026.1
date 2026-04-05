@@ -31,7 +31,7 @@ Após a compilação bem-sucedida, você pode executar o programa pelo próprio 
 
 ## Organização Interna dos Dados
 
-Para garantir eficiência nas inserções e remoções, o sistema foi construído utilizando **Listas Encadeadas (Linked Lists)**. O gerenciamento de memória é feito de forma estritamente manual via alocação dinâmica (new e delete), garantindo que não haja vazamentos de memória (memory leaks).
+Para garantir eficiência nas inserções e remoções, o sistema foi construído utilizando Listas Encadeadas. O gerenciamento de memória é feito de forma estritamente manual via alocação dinâmica, garantindo que não haja vazamentos de memória.
 
 A classe OrderBook contém três listas encadeadas principais:
 
