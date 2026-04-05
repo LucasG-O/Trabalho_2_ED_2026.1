@@ -5,7 +5,6 @@ Este projeto implementa um Livro de Ofertas (Order Book) financeiro em C++. O si
 
 O projeto demonstra o uso prático de Ponteiros, Alocação Dinâmica de Memória e Estruturas de Dados Lineares (Listas Encadeadas) desenvolvidas "do zero", sem o uso das bibliotecas prontas do C++ (como `std::vector` ou `std::list`).
 
----
 
 ## Instruções de Compilação
 Para compilar o projeto, você precisará de um compilador C++ instalado na sua máquina.
@@ -20,14 +19,15 @@ g++ main.cpp OrderBook.cpp Order.cpp Transaction.cpp -o order_book
 Após a compilação bem-sucedida, você pode executar o programa pelo próprio terminal.
 
 **No Windows:**
-> .\order_book.exe
-
+```bash
+.\order_book.exe
+```
+```bash
 **No Linux / macOS:**
-> ./order_book
-
+./order_book
+```
 O programa executará os casos de teste pré-definidos no arquivo main.cpp, demonstrando a inserção, execução, cancelamento e impressão das ordens e transações no terminal.
 
----
 
 ## Organização Interna dos Dados
 
