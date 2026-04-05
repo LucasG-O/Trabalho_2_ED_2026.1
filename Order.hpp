@@ -1,3 +1,5 @@
+#ifndef ORDER_HPP
+#define ORDER_HPP
 
 class Order {
 
@@ -17,3 +19,5 @@ public:
     float getPrice();
     int getTimestamp();
 };
+
+#endif // ORDER_HPP

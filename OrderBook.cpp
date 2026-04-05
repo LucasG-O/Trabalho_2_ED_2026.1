@@ -1,3 +1,5 @@
+
+
 #include "OrderBook.hpp"
 #include <iostream>
 
@@ -50,7 +52,8 @@ bool OrderBook::submit(Order order) {
             return false;
         }
 
-        this->executarTransacao(order, maior_ordem_compra->order, 'S'); // A ordem com maior preco de compra é tao grande quando o preco de venda. 
+        this->executarTransacao(order, maior_ordem_compra->order, 'S'); // A ordem com maior preco de compra é tao grande quando o preco de venda.
+        n_buy--;
         return true;
     }
 
@@ -203,6 +206,7 @@ bool OrderBook::cancel(int id) {
     OrderNode* anterior_c    = nullptr;
     OrderNode* atual_v = orders[1]; // A primeira ordem de venda
     OrderNode* anterior_v = nullptr;
+
     while (atual_c != nullptr){
         if (atual_c->order.getId() == id){
             if (anterior_c == nullptr){ // A ordem a ser cancelada é a primeira da lista de ordens de compra
@@ -246,6 +250,9 @@ int tamanho = 0;
         atual = atual->proximo;
     }
     *n = tamanho;
+    if (tamanho == 0) {
+        return nullptr;
+    }
     Order* ordens_compra = new Order[tamanho];
     atual = orders[0];
     for (int i = 0; i < tamanho; i++) {
@@ -263,6 +270,9 @@ Order* OrderBook::getSellOrders(int* n) {
         atual = atual->proximo;
     }
     *n = tamanho;
+    if (tamanho == 0) {
+        return nullptr;
+    }
     Order* ordens_venda = new Order[tamanho];
     atual = orders[1];
     for (int i = 0; i < tamanho; i++) {
@@ -280,6 +290,9 @@ Transaction* OrderBook::getTransactions(int* n) {
         atual = atual->proximo;
     }  
     *n = tamanho;
+    if (tamanho == 0) {
+        return nullptr;
+    }
     Transaction* transacoes = new Transaction[tamanho];
 
     atual = transactions_head;
@@ -301,6 +314,10 @@ int OrderBook::getNumSellOrders() {
 
 void OrderBook::printBuyOrders() {
     OrderNode* atual = orders[0];
+    std::cout << "Buy Orders:" << std::endl;
+    if (atual == nullptr){
+        std::cout << "(Empty)" << std::endl; 
+    }
     while(atual != nullptr){
         std::cout <<"[ "<< atual->order.getId()  << " | " << atual->order.getPrice() << " | " << atual->order.getTimestamp() << " ] " << std::endl;
         atual = atual->proximo;
@@ -309,6 +326,10 @@ void OrderBook::printBuyOrders() {
 
 void OrderBook::printSellOrders() {
     OrderNode* atual = orders[1];
+    std:: cout << "Sell Orders:" << std::endl; 
+    if (atual == nullptr){
+        std::cout << "(Empty)" << std::endl; 
+    }
     while(atual != nullptr){
         std::cout <<"[ "<< atual->order.getId()  << " | " << atual->order.getPrice() << " | " << atual->order.getTimestamp() << " ] " << std::endl;
         atual = atual->proximo;
@@ -317,8 +338,18 @@ void OrderBook::printSellOrders() {
 
 void OrderBook::printTransactions() {
     TransacoesNode* atual = transactions_head;
+    std::cout << "Transactions:" << std::endl;
+    if (atual == nullptr){
+        std::cout << "(Empty)" << std::endl; 
+    }
     while(atual != nullptr){
         std::cout <<"[ "<< atual->transaction.getBuyOrderId()  << " | " << atual->transaction.getSellOrderId() << " | " << atual->transaction.getExecutionPrice() << " ] " << std::endl;//[ Id da ordem de compra | Id da ordem de venda | Preço de execução ]
         atual = atual->proximo;
     }
+}
+
+void OrderBook::printTudo(){
+    OrderBook::printBuyOrders();
+    OrderBook::printSellOrders();
+    OrderBook::printTransactions();
 }

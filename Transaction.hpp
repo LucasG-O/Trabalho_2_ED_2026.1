@@ -1,3 +1,5 @@
+#ifndef TRANSACTION_HPP
+#define TRANSACTION_HPP
 
 class Transaction {
 
@@ -16,3 +18,5 @@ public:
     int getSellOrderId();
     float getExecutionPrice();
 };
+
+#endif // TRANSACTION_HPP

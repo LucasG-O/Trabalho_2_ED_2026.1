@@ -1,3 +1,6 @@
+#ifndef ORDERBOOK_HPP
+#define ORDERBOOK_HPP
+
 #include "Order.hpp"
 #include "Transaction.hpp"
 
@@ -45,6 +48,9 @@ public:
     void printBuyOrders();
     void printSellOrders();
     void printTransactions();
+    void printTudo();
 
     // Outros métodos auxiliares, se necessário
 };
+
+#endif // ORDERBOOK_HPP
