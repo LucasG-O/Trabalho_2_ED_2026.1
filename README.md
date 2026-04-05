@@ -1,9 +1,9 @@
 # Sistema de Livro de Ofertas (Order Book)
 
 ## Descrição do Projeto
-Este projeto implementa um **Livro de Ofertas (Order Book)** financeiro em C++. O sistema é responsável por receber, armazenar, cruzar e cancelar ordens de compra e venda de ativos. Quando o preço exigido por um vendedor (oferta) é igual ou menor que o preço oferecido por um comprador (demanda), o sistema executa automaticamente uma transação, atualizando o saldo de ordens do livro e guardando o histórico da operação.
+Este projeto implementa um Livro de Ofertas (Order Book) financeiro em C++. O sistema é responsável por receber, armazenar, cruzar e cancelar ordens de compra e venda de ativos. Quando o preço exigido por um vendedor (oferta) é igual ou menor que o preço oferecido por um comprador (demanda), o sistema executa automaticamente uma transação, atualizando o saldo de ordens do livro e guardando o histórico da operação.
 
-O projeto demonstra o uso prático de **Ponteiros, Alocação Dinâmica de Memória e Estruturas de Dados Lineares** (Listas Encadeadas) desenvolvidas "do zero", sem o uso das bibliotecas prontas do C++ (como `std::vector` ou `std::list`).
+O projeto demonstra o uso prático de Ponteiros, Alocação Dinâmica de Memória e Estruturas de Dados Lineares (Listas Encadeadas) desenvolvidas "do zero", sem o uso das bibliotecas prontas do C++ (como `std::vector` ou `std::list`).
 
 ---
 
