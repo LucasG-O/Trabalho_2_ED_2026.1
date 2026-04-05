@@ -1,13 +1,14 @@
 #include "OrderBook.hpp"
-
+#include "Order.hpp"
+#include "Transaction.hpp"
 #include <iostream>
 
 int main() {
     OrderBook orderBook;
 
-    std::cout << "=================================================" << std::endl;
-    std::cout << "1. INSERCAO DE ORDENS NAO EXECUTADAS (AGUARDANDO)" << std::endl;
-    std::cout << "=================================================" << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
+    std::cout << "INSERCAO DE ORDENS NAO EXECUTADAS" << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
     // Inserindo Ordens de Compra (B) - Preços mais baixos
     orderBook.submit(Order(1, 'B', 100.0, 1));
     orderBook.submit(Order(2, 'B', 95.0, 2));
@@ -16,14 +17,17 @@ int main() {
     orderBook.submit(Order(3, 'S', 110.0, 3));
     orderBook.submit(Order(4, 'S', 115.0, 4));
 
-    orderBook.printTudo();
+    std::cout << "Qtd Ordens de Compra: " << orderBook.getNumBuyOrders() << std::endl;
+    orderBook.printBuyOrders();
+    std::cout << "Qtd Ordens de Venda: " << orderBook.getNumSellOrders() << std::endl;
+    orderBook.printSellOrders();
     std::cout << "\n";
 
 
-    std::cout << "=================================================" << std::endl;
-    std::cout << "2. EXECUCOES BEM-SUCEDIDAS (MATCH)" << std::endl;
-    std::cout << "=================================================" << std::endl;
-    // Submete uma venda a 98. Como tem alguém querendo comprar a 100 (ID 1), vai executar!
+    std::cout << "-------------------------------------------------" << std::endl;
+    std::cout << "EXECUCOES BEM-SUCEDIDAS" << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
+    // Submete uma venfa a 98. Como tem alguem querendo comprar a 100 (ID 1), vai executar!
     std::cout << "> Submetendo ordem de Venda (ID 5, preco 98)..." << std::endl;
     orderBook.submit(Order(5, 'S', 98.0, 5));
 
@@ -32,13 +36,18 @@ int main() {
     orderBook.submit(Order(6, 'B', 112.0, 6));
 
     std::cout << "\n--- ESTADO DO SISTEMA APOS AS EXECUCOES ---" << std::endl;
-    orderBook.printTudo();
+    std::cout << "Transacoes Realizadas:" << std::endl;
+    orderBook.printTransactions();
+    std::cout << "Ordens de Compra restantes:" << std::endl;
+    orderBook.printBuyOrders();
+    std::cout << "Ordens de Venda restantes:" << std::endl;
+    orderBook.printSellOrders();
     std::cout << "\n";
 
 
-    std::cout << "=================================================" << std::endl;
-    std::cout << "3. CANCELAMENTOS" << std::endl;
-    std::cout << "=================================================" << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
+    std::cout << "CANCELAMENTOS" << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
     std::cout << "> Cancelando ordem de compra ID 2..." << std::endl;
     orderBook.cancel(2);
     
@@ -46,13 +55,16 @@ int main() {
     orderBook.cancel(4);
 
     std::cout << "\n--- ESTADO DO SISTEMA APOS CANCELAMENTOS ---" << std::endl;
-    orderBook.printTudo(); // Mostra o estado completo do book
+    std::cout << "Qtd Ordens de Compra: " << orderBook.getNumBuyOrders() << std::endl;
+    orderBook.printBuyOrders();
+    std::cout << "Qtd Ordens de Venda: " << orderBook.getNumSellOrders() << std::endl;
+    orderBook.printSellOrders(); // O book deve estar vazio agora!
     std::cout << "\n";
 
 
-    std::cout << "=================================================" << std::endl;
-    std::cout << "4. RECUPERACAO DOS DADOS (Metodos get...)" << std::endl;
-    std::cout << "=================================================" << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
+    std::cout << " RECUPERACAO DOS DADOS (Metodos get...)" << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
     
     // Adicionamos uma ordem de teste só para ter o que recuperar no getBuyOrders
     orderBook.submit(Order(7, 'B', 90.0, 7)); 
@@ -66,9 +78,7 @@ int main() {
                   << " | Venda ID: " << array_transacoes[i].getSellOrderId() 
                   << " | Preco Executado: " << array_transacoes[i].getExecutionPrice() << std::endl;
     }
-    if (array_transacoes != nullptr) {
-        delete[] array_transacoes; // Liberando a memória dinâmica alocada
-    }
+    delete[] array_transacoes; // Limpando a memória dinâmica
 
     // Testando a recuperação de ordens de compra
     int qtd_compras = 0;
@@ -77,9 +87,7 @@ int main() {
     for (int i = 0; i < qtd_compras; ++i) {
         std::cout << "  -> Ordem ID: " << array_compras[i].getId() << " | Preco: " << array_compras[i].getPrice() << std::endl;
     }
-    if (array_compras != nullptr) {
-        delete[] array_compras; // Liberando a memória dinâmica alocada
-    }
+    delete[] array_compras;
     
     // Testando a recuperação de ordens de venda (deve retornar 0 pois cancelamos e executamos todas)
     int qtd_vendas = 0;
@@ -88,10 +96,5 @@ int main() {
     if (array_vendas != nullptr) {
         delete[] array_vendas; // Só deleta se não for nulo
     }
-
-    std::cout << "\n--- ESTADO FINAL COM printTudo() ---" << std::endl;
-    orderBook.printTudo();
-
-    std::cout << "\n=== FIM DOS TESTES ===" << std::endl;
     return 0;
 }
