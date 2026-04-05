@@ -25,7 +25,7 @@ Após a compilação bem-sucedida, você pode executar o programa pelo próprio 
 **No Linux / macOS:**
 > ./order_book
 
-*O programa executará os casos de teste pré-definidos no arquivo main.cpp, demonstrando a inserção, execução, cancelamento e impressão das ordens e transações no terminal.*
+O programa executará os casos de teste pré-definidos no arquivo main.cpp, demonstrando a inserção, execução, cancelamento e impressão das ordens e transações no terminal.
 
 ---
 
