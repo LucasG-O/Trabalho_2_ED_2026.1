@@ -1,6 +1,5 @@
 #include "OrderBook.hpp"
-#include "Order.hpp"
-#include "Transaction.hpp"
+
 #include <iostream>
 
 int main() {
@@ -17,10 +16,7 @@ int main() {
     orderBook.submit(Order(3, 'S', 110.0, 3));
     orderBook.submit(Order(4, 'S', 115.0, 4));
 
-    std::cout << "Qtd Ordens de Compra: " << orderBook.getNumBuyOrders() << std::endl;
-    orderBook.printBuyOrders();
-    std::cout << "Qtd Ordens de Venda: " << orderBook.getNumSellOrders() << std::endl;
-    orderBook.printSellOrders();
+    orderBook.printTudo();
     std::cout << "\n";
 
 
@@ -36,12 +32,7 @@ int main() {
     orderBook.submit(Order(6, 'B', 112.0, 6));
 
     std::cout << "\n--- ESTADO DO SISTEMA APOS AS EXECUCOES ---" << std::endl;
-    std::cout << "Transacoes Realizadas:" << std::endl;
-    orderBook.printTransactions();
-    std::cout << "Ordens de Compra restantes:" << std::endl;
-    orderBook.printBuyOrders();
-    std::cout << "Ordens de Venda restantes:" << std::endl;
-    orderBook.printSellOrders();
+    orderBook.printTudo();
     std::cout << "\n";
 
 
@@ -55,10 +46,7 @@ int main() {
     orderBook.cancel(4);
 
     std::cout << "\n--- ESTADO DO SISTEMA APOS CANCELAMENTOS ---" << std::endl;
-    std::cout << "Qtd Ordens de Compra: " << orderBook.getNumBuyOrders() << std::endl;
-    orderBook.printBuyOrders();
-    std::cout << "Qtd Ordens de Venda: " << orderBook.getNumSellOrders() << std::endl;
-    orderBook.printSellOrders(); // O book deve estar vazio agora!
+    orderBook.printTudo(); // Mostra o estado completo do book
     std::cout << "\n";
 
 
@@ -78,7 +66,9 @@ int main() {
                   << " | Venda ID: " << array_transacoes[i].getSellOrderId() 
                   << " | Preco Executado: " << array_transacoes[i].getExecutionPrice() << std::endl;
     }
-    delete[] array_transacoes; // Limpando a memória dinâmica!
+    if (array_transacoes != nullptr) {
+        delete[] array_transacoes; // Liberando a memória dinâmica alocada
+    }
 
     // Testando a recuperação de ordens de compra
     int qtd_compras = 0;
@@ -87,7 +77,9 @@ int main() {
     for (int i = 0; i < qtd_compras; ++i) {
         std::cout << "  -> Ordem ID: " << array_compras[i].getId() << " | Preco: " << array_compras[i].getPrice() << std::endl;
     }
-    delete[] array_compras; // Limpando a memória dinâmica!
+    if (array_compras != nullptr) {
+        delete[] array_compras; // Liberando a memória dinâmica alocada
+    }
     
     // Testando a recuperação de ordens de venda (deve retornar 0 pois cancelamos e executamos todas)
     int qtd_vendas = 0;
@@ -96,6 +88,9 @@ int main() {
     if (array_vendas != nullptr) {
         delete[] array_vendas; // Só deleta se não for nulo
     }
+
+    std::cout << "\n--- ESTADO FINAL COM printTudo() ---" << std::endl;
+    orderBook.printTudo();
 
     std::cout << "\n=== FIM DOS TESTES ===" << std::endl;
     return 0;
